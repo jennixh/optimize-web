@@ -11,7 +11,7 @@
             --gradient-primary: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
             --gradient-bg: radial-gradient(ellipse at top, #1a2332 0%, #0B1426 100%);
             --gradient-bg2: #031313;
-        
+
         }
 
         * {
@@ -225,7 +225,7 @@
         .hero-img img {
             max-width: 90%;
             border-radius: 4rem;
-           
+
         }
 
         .graph-elements {
@@ -514,8 +514,578 @@
             }
         }
 
+        .solver-section {
+            margin-top: 60px;
+        }
+
+        .solver-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .solver-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            opacity: 0.8;
+        }
+
+        /* Header do solver */
+        .solver-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(0, 255, 135, 0.2);
+        }
+
+        .solver-header h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .solver-header h2 i {
+            color: var(--primary-green);
+            font-size: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .solver-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        /* Seções do formulário */
+        .form-section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: rgba(0, 255, 135, 0.03);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 135, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .form-section:hover {
+            background: rgba(0, 255, 135, 0.05);
+            border-color: rgba(0, 255, 135, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-section h3 {
+            color: var(--primary-green);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-section h3::before {
+            content: '▶';
+            color: var(--primary-green);
+            font-size: 0.8rem;
+        }
+
+        /* Configuração do problema */
+        .problem-config {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            align-items: center;
+        }
+
+        .problem-config label {
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .problem-config input[type="number"] {
+            background: var(--dark-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100px;
+        }
+
+        .problem-config input[type="number"]:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 15px rgba(0, 255, 135, 0.3);
+            outline: none;
+        }
+
+        /* Função objetivo */
+        .objective-function {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: var(--dark-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .objective-function select {
+            background: var(--primary-green);
+            color: var(--dark-bg);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .objective-function select:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 135, 0.4);
+        }
+
+        .objective-function span {
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .objective-function input[type="number"] {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 255, 135, 0.3);
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: var(--text-primary);
+            font-weight: 600;
+            width: 80px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .objective-function input[type="number"]:focus {
+            border-color: var(--primary-green);
+            background: rgba(0, 255, 135, 0.1);
+            box-shadow: 0 0 15px rgba(0, 255, 135, 0.3);
+            outline: none;
+        }
+
+        /* Restrições */
+        .restricao-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: var(--dark-bg);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 135, 0.2);
+            flex-wrap: wrap;
+            transition: all 0.3s ease;
+        }
+
+        .restricao-row:hover {
+            border-color: var(--primary-green);
+            box-shadow: 0 5px 20px rgba(0, 255, 135, 0.2);
+        }
+
+        .restricao-row input[type="number"] {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            border-radius: 6px;
+            padding: 8px 10px;
+            color: var(--text-primary);
+            width: 70px;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .restricao-row input[type="number"]:focus {
+            border-color: var(--primary-green);
+            background: rgba(0, 255, 135, 0.08);
+            outline: none;
+        }
+
+        .restricao-row span {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Botão de remover restrição */
+        .btn-remove {
+            background: #ff4757;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-remove:hover {
+            transform: scale(1.2);
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+        }
+
+        /* Botão de adicionar restrição */
+        .btn-add {
+            background: var(--primary-green);
+            color: var(--dark-bg);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 255, 135, 0.4);
+        }
+
+        .btn-add i {
+            font-size: 0.9rem;
+        }
+
+        /* Tipo de restrição para Big M */
+        .constraint-type {
+            background: var(--text-secondary);
+            color: var(--dark-bg);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .constraint-type:hover {
+            background: var(--primary-green);
+            transform: translateY(-1px);
+        }
+
+        /* Seleção de método para minimização */
+        .method-selection {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .method-selection label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .method-selection label:hover {
+            background: rgba(0, 255, 135, 0.1);
+        }
+
+        .method-selection input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-green);
+        }
+
+        /* Checkbox de não-negatividade */
+        .non-negativity {
+            padding: 20px;
+            background: rgba(0, 255, 135, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 135, 0.2);
+        }
+
+        .non-negativity label {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .non-negativity input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-green);
+            transform: scale(1.2);
+        }
+
+        /* Ações do solver */
+        .solver-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(0, 255, 135, 0.2);
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--dark-bg);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0, 255, 135, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 255, 135, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            padding: 13px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary-green);
+            color: var(--primary-green);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 255, 135, 0.2);
+        }
+
+        /* Animações de entrada */
+        .solver-container.active {
+            animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Efeitos especiais */
+        .form-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, var(--primary-green), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .form-section:hover::after {
+            opacity: 0.6;
+        }
+
+        /* Inputs com efeito glow */
+        input[type="number"]:focus,
+        select:focus {
+            animation: inputGlow 1s ease-in-out;
+        }
+
+    @keyframes inputGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 5px rgba(0, 255, 135, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(0, 255, 135, 0.6);
+            }
+        }
+
         /* Responsive */
-        @media (max-width: 768px) {
+    @media (max-width: 768px) {
+            .solver-container {
+                padding: 25px;
+                margin-bottom: 30px;
+            }
+
+            .solver-header h2 {
+                font-size: 1.8rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .objective-function {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .objective-function>div {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                align-items: center;
+            }
+
+            .restricao-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .restricao-row>div {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                align-items: center;
+            }
+
+            .problem-config {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .method-selection {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .solver-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Efeitos adicionais para botões especiais */
+        .btn-primary:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(-1px);
+        }
+
+        /* Melhorias visuais para inputs */
+        input[type="number"]::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        /* Melhorias para acessibilidade */
+        .solver-container:focus-within {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(0, 255, 135, 0.1);
+        }
+
+    
+
+        button:focus-visible {
+            outline: 2px solid var(--primary-green);
+            outline-offset: 2px;
+    }
+    
+
+        /* Responsive */
+    @media (max-width: 768px) {
             .hero {
                 grid-template-columns: 1fr;
                 gap: 40px;
@@ -538,4 +1108,4 @@
             .nav {
                 display: none;
             }
-        }
+    }
