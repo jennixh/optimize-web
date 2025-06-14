@@ -1,0 +1,22 @@
+# Ambientes virtuais
+myenv/
+venv/
+
+# Cache do Python
+__pycache__/
+*.py[cod]
+
+# Migrations compiladas
+**/migrations/*.pyc
+**/migrations/__pycache__/
+
+# Arquivos temporários
+*.log
+*.sqlite3
+*.db
+
+# VS Code
+.vscode/
+
+# Arquivos de ambiente
+.env
