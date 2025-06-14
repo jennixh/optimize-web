@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .graphical_method import GraphicalMethod
 from django.shortcuts import render
+from .big_m import SimplexBigM  # ajuste o caminho conforme onde seu código Big M está
 
 def index(request):
     return render(request, 'main.html')
@@ -25,7 +26,7 @@ def solve_linear_program(request):
             gm = GraphicalMethod(c, A, b, sense=sense, constraints_type=constraints_type)
             point, value = gm.solve()
 
-            # Gerar gráfico e salvar em memória
+        # Gerar gráfico e salvar em memória
             fig = gm._plot_solution(gm._find_vertices(), tuple(point))  # <- aqui está a correção
             buf = io.BytesIO()
             fig.savefig(buf, format='png')
@@ -37,6 +38,31 @@ def solve_linear_program(request):
                 'solution_point': point.tolist(),
                 'optimal_value': value,
                 'plot_image': img_base64
+            })
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+    return JsonResponse({'message': 'Only POST allowed'}, status=405)
+
+@csrf_exempt
+def solve_bigm(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+
+            c = data['c']
+            A = data['A']
+            b = data['b']
+            sense = data.get('sense', 'max')
+            constraints_type = data.get('constraints_type', None)
+
+            solver = SimplexBigM(c, A, b, sense=sense, constraints_type=constraints_type)
+            solution, optimal_value = solver.solve()
+
+            return JsonResponse({
+                'solution': solution.tolist(),
+                'optimal_value': optimal_value
             })
 
         except Exception as e:

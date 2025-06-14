@@ -336,53 +336,69 @@ class LinearProgrammingMethods {
             updateBigMForm() {
                 const numVars = parseInt(document.getElementById('bigm-num-vars').value);
                 const numRestrictions = parseInt(document.getElementById('bigm-num-restrictions').value);
-
+            
                 // Atualizar função objetivo
                 const objetivoContainer = document.getElementById('bigm-objetivo-inputs');
                 objetivoContainer.innerHTML = '';
-
+            
                 for (let i = 1; i <= numVars; i++) {
                     const input = document.createElement('input');
                     input.type = 'number';
                     input.placeholder = `C${i}`;
                     input.step = 'any';
                     input.id = `bigm-c${i}`;
-
+            
                     const span = document.createElement('span');
                     span.textContent = i < numVars ? `X${i} + ` : `X${i}`;
-
+            
                     objetivoContainer.appendChild(input);
                     objetivoContainer.appendChild(span);
                 }
-
+            
                 // Atualizar restrições
                 const restricoesContainer = document.getElementById('bigm-restricoes-container');
                 restricoesContainer.innerHTML = '';
-
-                for (let i = 1; i <= numRestrictions; i++) {
-                    const restricaoDiv = document.createElement('div');
-                    restricaoDiv.className = 'restricao-row';
-
-                    let html = '';
+            
+                for (let i = 0; i < numRestrictions; i++) {
+                    const linha = document.createElement('div');
+                    linha.className = 'restricao-row';
+            
                     for (let j = 1; j <= numVars; j++) {
-                        html += `
-                    <input type="number" placeholder="a${i}${j}" step="any">
-                    <span>X${j} ${j < numVars ? '+ ' : ''}</span>
-                `;
+                        const input = document.createElement('input');
+                        input.type = 'number';
+                        input.placeholder = `A${i+1}${j}`;
+                        input.step = 'any';
+                        input.id = `bigm-a${i}-${j}`;
+            
+                        linha.appendChild(input);
+            
+                        const span = document.createElement('span');
+                        span.textContent = j < numVars ? `X${j} + ` : `X${j}`;
+                        linha.appendChild(span);
                     }
-                    html += `
-                <select class="constraint-type">
-                    <option value="<=">≤</option>
-                    <option value=">=">≥</option>
-                    <option value="=">=</option>
-                </select>
-                <input type="number" placeholder="b${i}" step="any">
-            `;
-
-                    restricaoDiv.innerHTML = html;
-                    restricoesContainer.appendChild(restricaoDiv);
+            
+                    // Select para tipo de restrição
+                    const select = document.createElement('select');
+                    select.id = `bigm-op${i}`;
+                    ['<=', '>=', '='].forEach(op => {
+                        const option = document.createElement('option');
+                        option.value = op;
+                        option.textContent = op;
+                        select.appendChild(option);
+                    });
+                    linha.appendChild(select);
+            
+                    // RHS
+                    const bInput = document.createElement('input');
+                    bInput.type = 'number';
+                    bInput.placeholder = `B${i+1}`;
+                    bInput.step = 'any';
+                    bInput.id = `bigm-b${i}`;
+                    linha.appendChild(bInput);
+            
+                    restricoesContainer.appendChild(linha);
                 }
-            }
+            }            
 
             updateMinimizacaoForm() {
                 const numVars = parseInt(document.getElementById('min-num-vars').value);
@@ -497,17 +513,69 @@ class LinearProgrammingMethods {
 
             }               
 
-            resolverSimplex() {
-                console.log('Resolvendo pelo método Simplex...');
-                // Aqui seria implementada a lógica de resolução
-                alert('Formulário configurado! Implementar lógica de resolução Simplex.');
-            }
+            // resolverSimplex() {
+            //     console.log('Resolvendo pelo método Simplex...');
+            //     // Aqui seria implementada a lógica de resolução
+            //     alert('Formulário configurado! Implementar lógica de resolução Simplex.');
+            // }
 
             resolverBigM() {
-                console.log('Resolvendo pelo método Big M...');
-                // Aqui seria implementada a lógica de resolução
-                alert('Formulário configurado! Implementar lógica de resolução Big M.');
-            }
+                const numVars = parseInt(document.getElementById('bigm-num-vars').value);
+                const numRestrictions = parseInt(document.getElementById('bigm-num-restrictions').value);
+                const tipo = document.getElementById('bigm-objetivo-tipo').value;
+            
+                const c = [];
+                for (let i = 1; i <= numVars; i++) {
+                    const val = parseFloat(document.getElementById(`bigm-c${i}`).value);
+                    c.push(isNaN(val) ? 0 : val);
+                }
+            
+                const A = [];
+                const b = [];
+                const constraints_type = [];
+            
+                for (let i = 0; i < numRestrictions; i++) {
+                    const linha = [];
+                    for (let j = 1; j <= numVars; j++) {
+                        const val = parseFloat(document.getElementById(`bigm-a${i}-${j}`).value);
+                        linha.push(isNaN(val) ? 0 : val);
+                    }
+                    A.push(linha);
+            
+                    const bi = parseFloat(document.getElementById(`bigm-b${i}`).value);
+                    b.push(isNaN(bi) ? 0 : bi);
+            
+                    const tipoRestricao = document.getElementById(`bigm-op${i}`).value;
+                    constraints_type.push(tipoRestricao);
+                }
+            
+                const payload = {
+                    c: c,
+                    A: A,
+                    b: b,
+                    sense: tipo,
+                    constraints_type: constraints_type
+                };
+            
+                fetch('/api/bigm/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        alert("Erro: " + data.error);
+                    } else {
+                        alert(`Solução: ${data.solution}, Valor ótimo: ${data.optimal_value}`);
+                        // Mostrar gráfico se for o caso
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Erro na requisição.");
+                });
+            }            
 
             resolverMinimizacao() {
                 console.log('Resolvendo pelo método de Minimização...');
