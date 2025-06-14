@@ -1,169 +1,61 @@
 class MolecularSystem {
-            constructor() {
-                this.canvas = document.createElement('canvas');
-                this.ctx = this.canvas.getContext('2d');
-                this.molecules = [];
-                this.connections = [];
+    // ... seu código do MolecularSystem aqui (sem mudanças) ...
+}
 
-                this.setupCanvas();
-                this.createMolecules();
-                this.animate();
+// Inicializa o sistema molecular assim que o script roda
+new MolecularSystem();
 
-                window.addEventListener('resize', () => this.handleResize());
-            }
+// Efeitos de hover nos botões
+document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
+    btn.addEventListener('mouseenter', function () {
+        this.style.transform = 'translateY(-3px) scale(1.05)';
+    });
+    btn.addEventListener('mouseleave', function () {
+        this.style.transform = 'translateY(0) scale(1)';
+    });
+});
 
-            setupCanvas() {
-                const container = document.getElementById('molecularBg');
-                container.appendChild(this.canvas);
-                this.handleResize();
+// Sistema de Métodos de Programação Linear
+class LinearProgrammingMethods {
+    constructor() {
+        this.currentMethod = null;
+        this.init();
+    }
 
-                this.canvas.style.position = 'absolute';
-                this.canvas.style.top = '0';
-                this.canvas.style.left = '0';
-                this.canvas.style.pointerEvents = 'none';
-            }
+    init() {
+        this.createSolverContainers();
+        this.addEventListeners();
+    }
 
-            handleResize() {
-                this.canvas.width = window.innerWidth;
-                this.canvas.height = window.innerHeight;
-            }
+    createSolverContainers() {
+        const container = document.querySelector('.container');
 
-            createMolecules() {
-                const count = Math.floor((this.canvas.width * this.canvas.height) / 15000);
-                this.molecules = [];
-
-                for (let i = 0; i < count; i++) {
-                    this.molecules.push({
-                        x: Math.random() * this.canvas.width,
-                        y: Math.random() * this.canvas.height,
-                        vx: (Math.random() - 0.5) * 0.5,
-                        vy: (Math.random() - 0.5) * 0.5,
-                        radius: Math.random() * 2 + 1,
-                        opacity: Math.random() * 0.8 + 0.2
-                    });
-                }
-            }
-
-            updateMolecules() {
-                this.molecules.forEach(molecule => {
-                    molecule.x += molecule.vx;
-                    molecule.y += molecule.vy;
-
-                    if (molecule.x < 0 || molecule.x > this.canvas.width) molecule.vx *= -1;
-                    if (molecule.y < 0 || molecule.y > this.canvas.height) molecule.vy *= -1;
-
-                    molecule.x = Math.max(0, Math.min(this.canvas.width, molecule.x));
-                    molecule.y = Math.max(0, Math.min(this.canvas.height, molecule.y));
-                });
-            }
-
-            drawConnections() {
-                this.ctx.strokeStyle = 'rgba(0, 255, 135, 0.1)';
-                this.ctx.lineWidth = 1;
-
-                for (let i = 0; i < this.molecules.length; i++) {
-                    for (let j = i + 1; j < this.molecules.length; j++) {
-                        const dx = this.molecules[i].x - this.molecules[j].x;
-                        const dy = this.molecules[i].y - this.molecules[j].y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-
-                        if (distance < 120) {
-                            const opacity = 1 - distance / 120;
-                            this.ctx.strokeStyle = `rgba(0, 255, 135, ${opacity * 0.15})`;
-                            this.ctx.beginPath();
-                            this.ctx.moveTo(this.molecules[i].x, this.molecules[i].y);
-                            this.ctx.lineTo(this.molecules[j].x, this.molecules[j].y);
-                            this.ctx.stroke();
-                        }
-                    }
-                }
-            }
-
-            drawMolecules() {
-                this.molecules.forEach(molecule => {
-                    this.ctx.beginPath();
-                    this.ctx.arc(molecule.x, molecule.y, molecule.radius, 0, Math.PI * 2);
-                    this.ctx.fillStyle = `rgba(0, 255, 135, ${molecule.opacity * 0.6})`;
-                    this.ctx.fill();
-
-                    this.ctx.beginPath();
-                    this.ctx.arc(molecule.x, molecule.y, molecule.radius * 2, 0, Math.PI * 2);
-                    this.ctx.fillStyle = `rgba(0, 255, 135, ${molecule.opacity * 0.1})`;
-                    this.ctx.fill();
-                });
-            }
-
-            animate() {
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-                this.updateMolecules();
-                this.drawConnections();
-                this.drawMolecules();
-
-                requestAnimationFrame(() => this.animate());
-            }
-        }
-
-        // Inicializar sistema molecular
-        new MolecularSystem();
-
-        // Efeitos de hover nos botões
-        document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
-            btn.addEventListener('mouseenter', function () {
-                this.style.transform = 'translateY(-3px) scale(1.05)';
-            });
-
-            btn.addEventListener('mouseleave', function () {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
-        });
-
-        // Sistema de Métodos de Programação Linear
-        class LinearProgrammingMethods {
-            constructor() {
-                this.currentMethod = null;
-                this.init();
-            }
-
-            init() {
-                this.createSolverContainers();
-                this.addEventListeners();
-            }
-
-            createSolverContainers() {
-                const container = document.querySelector('.container');
-
-                // Container principal para os métodos
-                const solverSection = document.createElement('div');
-                solverSection.className = 'solver-section';
-                solverSection.innerHTML = `
+        const solverSection = document.createElement('div');
+        solverSection.className = 'solver-section';
+        solverSection.innerHTML = `
             <div id="graficoSolver" class="solver-container">
                 ${this.createGraficoForm()}
             </div>
-            
             <div id="simplexSolver" class="solver-container">
                 ${this.createSimplexForm()}
             </div>
-            
             <div id="bigmSolver" class="solver-container">
                 ${this.createBigMForm()}
             </div>
-            
             <div id="minimizacaoSolver" class="solver-container">
                 ${this.createMinimizacaoForm()}
             </div>
         `;
 
-                container.appendChild(solverSection);
-            }
+        container.appendChild(solverSection);
+    }
 
-            createGraficoForm() {
-                return `
+    createGraficoForm() {
+        return `
             <div class="solver-header">
                 <h2><i class="fas fa-chart-line"></i> Método Gráfico</h2>
                 <p>Para problemas com exatamente 2 variáveis (X₁ e X₂)</p>
             </div>
-            
             <div class="form-section">
                 <h3>Função Objetivo</h3>
                 <div class="objective-function">
@@ -178,7 +70,6 @@ class MolecularSystem {
                     <span>X₂</span>
                 </div>
             </div>
-            
             <div class="form-section">
                 <h3>Restrições</h3>
                 <div id="grafico-restricoes">
@@ -195,7 +86,6 @@ class MolecularSystem {
                     <i class="fas fa-plus"></i> Adicionar Restrição
                 </button>
             </div>
-            
             <div class="solver-actions">
                 <button type="button" class="btn-primary" onclick="linearProgramming.resolverGrafico()">
                     <i class="fas fa-chart-line"></i> Resolver Graficamente
@@ -204,9 +94,9 @@ class MolecularSystem {
                     Limpar
                 </button>
             </div>
+            <div id="grafico-solucao"></div>
         `;
-            }
-
+    }
             createSimplexForm() {
                 return `
             <div class="solver-header">
@@ -554,10 +444,58 @@ class MolecularSystem {
             }
 
             resolverGrafico() {
-                console.log('Resolvendo pelo método gráfico...');
-                // Aqui seria implementada a lógica de resolução
-                alert('Formulário configurado! Implementar lógica de resolução gráfica.');
-            }
+                const tipo = document.getElementById('grafico-objetivo-tipo').value;
+                const c1 = parseFloat(document.getElementById('grafico-c1').value);
+                const c2 = parseFloat(document.getElementById('grafico-c2').value);
+            
+                const A = [];
+                const b = [];
+                const constraints_type = [];
+            
+                const linhas = document.querySelectorAll('#grafico-restricoes .restricao-row');
+                linhas.forEach(linha => {
+                    const inputs = linha.querySelectorAll('input');
+                    if (inputs.length === 3) {
+                        const a1 = parseFloat(inputs[0].value);
+                        const a2 = parseFloat(inputs[1].value);
+                        const bi = parseFloat(inputs[2].value);
+                        A.push([a1, a2]);
+                        b.push(bi);
+                        constraints_type.push('<='); // ajuste se seu frontend tem outro tipo de restrição
+                    }
+                });
+            
+                fetch('/api/grafico/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        c: [c1, c2],
+                        A: A,
+                        b: b,
+                        sense: tipo === 'max' ? 'max' : 'min',  // ajuste conforme seu select
+                        constraints_type: constraints_type
+                    })
+                })
+                .then(response => response.json())
+               .then(data => {
+                if (data.error) {
+                    console.error("Erro:", data.error);
+                    alert("Erro: " + data.error);
+                    return;
+                }
+
+                alert(`Solução: ponto ${data.solution_point}, valor ótimo ${data.optimal_value}`);
+
+                // Exibir gráfico
+                if (data.plot_image) {
+                    const imgTag = `<img src="data:image/png;base64,${data.plot_image}" alt="Gráfico da Solução" style="max-width: 100%; border: 1px solid #ccc; margin-top: 15px;" />`;
+                    document.getElementById('grafico-solucao').innerHTML = imgTag;
+                }
+            })
+
+            }               
 
             resolverSimplex() {
                 console.log('Resolvendo pelo método Simplex...');
@@ -592,4 +530,8 @@ class MolecularSystem {
             linearProgramming.updateSimplexForm();
             linearProgramming.updateBigMForm();
             linearProgramming.updateMinimizacaoForm();
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            linearProgramming = new LinearProgrammingMethods();
         });
