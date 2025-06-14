@@ -1,6 +1,7 @@
 # myapp/views.py
 
 from django.http import HttpResponse
+from django.shortcuts import render
 
-def home(request):
-    return HttpResponse("Primeira página.")
+def index(request):
+    return render(request, 'main.html')
