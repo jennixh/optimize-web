@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programação Linear - Otimização Avançada</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="/style.css" rel="stylesheet">  
+</head>
+<body>
+    <div class="molecular-bg" id="molecularBg"></div>
+    
+    <div class="container">
+        <header class="header">
+            <div class="logo">OptimizeWeb</div>
+            <nav class="nav">
+                <a href="#" class="nav-link">Métodos de Soluções</a>
+                <a href="#" class="nav-link">Alunos resposáveis</a>
+                <a href="#" class="nav-link">Tutoriais</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    ⚡ Otimização Avançada
+                </div>
+                <h1 class="hero-title">
+                    <span class="gradient-text">Programação</span><br>
+                    Linear
+                </h1>
+                <p class="hero-subtitle">
+                    Resolva problemas complexos de otimização com algoritmos avançados, desde métodos gráficos até Simplex e Big M. Transforme dados em decisões estratégicas.
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn-primary">Começar Agora</button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">98.9%</div>
+                        <div class="stat-label">Precisão</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Metodos</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Disponibilidade</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="hero-img">
+                   <img src="/Imagem1.png" alt="">
+                </div>
+            </div>
+        </section>
+
+        <div id="modelsSection" class="models-section">
+            <h2 class="section-title">Escolha seu Método de Resolução</h2>
+            <p class="section-subtitle">
+                Cada método tem suas particularidades e aplicações específicas. Selecione o mais adequado para seu
+                problema.
+            </p>
+
+            <div class="models-grid">
+                <div class="model-card" onclick="selectModel('grafico')">
+                    <div class="model-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Método Gráfico</h3>
+                    <p>Resolução visual para problemas com 2 variáveis. Utiliza representação gráfica das restrições
+                        para encontrar a região viável e o ponto ótimo através de visualização interativa.</p>
+                    <button class="btn">Usar Método Gráfico</button>
+                </div>
+
+                <div class="model-card" onclick="selectModel('simplex')">
+                    <div class="model-icon"><i class="fas fa-project-diagram"></i></div>
+                    <h3>Simplex Padrão</h3>
+                    <p>Algoritmo clássico para problemas de programação linear. Eficiente para múltiplas variáveis com
+                        restrições de desigualdade e não-negatividade, garantindo convergência rápida.</p>
+                    <button class="btn">Usar Simplex Padrão</button>
+                </div>
+
+                <div class="model-card" onclick="selectModel('bigm')">
+                    <div class="model-icon"><i class="fas fa-infinity"></i></div>
+                    <h3>Simplex Big M</h3>
+                    <p>Extensão avançada do método Simplex para problemas com restrições de igualdade e desigualdade
+                        complexas. Utiliza variáveis artificiais com penalização inteligente.</p>
+                    <button class="btn">Usar Big M</button>
+                </div>
+
+                <div class="model-card" onclick="selectModel('minimizacao')">
+                    <div class="model-icon"><i class="fas fa-layer-group"></i></div>
+                    <h3>Simplex Minimização</h3>
+                    <p>Adaptação especializada do Simplex para problemas de minimização. Utiliza transformações
+                        matemáticas ou método dual para encontrar o valor mínimo global.</p>
+                    <button class="btn">Usar Minimização</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sistema de Moléculas Animadas
+        class MolecularSystem {
+            constructor() {
+                this.canvas = document.createElement('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.molecules = [];
+                this.connections = [];
+                
+                this.setupCanvas();
+                this.createMolecules();
+                this.animate();
+                
+                window.addEventListener('resize', () => this.handleResize());
+            }
+            
+            setupCanvas() {
+                const container = document.getElementById('molecularBg');
+                container.appendChild(this.canvas);
+                this.handleResize();
+                
+                this.canvas.style.position = 'absolute';
+                this.canvas.style.top = '0';
+                this.canvas.style.left = '0';
+                this.canvas.style.pointerEvents = 'none';
+            }
+            
+            handleResize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            
+            createMolecules() {
+                const count = Math.floor((this.canvas.width * this.canvas.height) / 15000);
+                this.molecules = [];
+                
+                for (let i = 0; i < count; i++) {
+                    this.molecules.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        radius: Math.random() * 2 + 1,
+                        opacity: Math.random() * 0.8 + 0.2
+                    });
+                }
+            }
+            
+            updateMolecules() {
+                this.molecules.forEach(molecule => {
+                    molecule.x += molecule.vx;
+                    molecule.y += molecule.vy;
+                    
+                    if (molecule.x < 0 || molecule.x > this.canvas.width) molecule.vx *= -1;
+                    if (molecule.y < 0 || molecule.y > this.canvas.height) molecule.vy *= -1;
+                    
+                    molecule.x = Math.max(0, Math.min(this.canvas.width, molecule.x));
+                    molecule.y = Math.max(0, Math.min(this.canvas.height, molecule.y));
+                });
+            }
+            
+            drawConnections() {
+                this.ctx.strokeStyle = 'rgba(0, 255, 135, 0.1)';
+                this.ctx.lineWidth = 1;
+                
+                for (let i = 0; i < this.molecules.length; i++) {
+                    for (let j = i + 1; j < this.molecules.length; j++) {
+                        const dx = this.molecules[i].x - this.molecules[j].x;
+                        const dy = this.molecules[i].y - this.molecules[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < 120) {
+                            const opacity = 1 - distance / 120;
+                            this.ctx.strokeStyle = `rgba(0, 255, 135, ${opacity * 0.15})`;
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(this.molecules[i].x, this.molecules[i].y);
+                            this.ctx.lineTo(this.molecules[j].x, this.molecules[j].y);
+                            this.ctx.stroke();
+                        }
+                    }
+                }
+            }
+            
+            drawMolecules() {
+                this.molecules.forEach(molecule => {
+                    this.ctx.beginPath();
+                    this.ctx.arc(molecule.x, molecule.y, molecule.radius, 0, Math.PI * 2);
+                    this.ctx.fillStyle = `rgba(0, 255, 135, ${molecule.opacity * 0.6})`;
+                    this.ctx.fill();
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(molecule.x, molecule.y, molecule.radius * 2, 0, Math.PI * 2);
+                    this.ctx.fillStyle = `rgba(0, 255, 135, ${molecule.opacity * 0.1})`;
+                    this.ctx.fill();
+                });
+            }
+            
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.updateMolecules();
+                this.drawConnections();
+                this.drawMolecules();
+                
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+        
+        // Inicializar sistema molecular
+        new MolecularSystem();
+        
+        // Efeitos de hover nos botões
+        document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px) scale(1.05)';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
