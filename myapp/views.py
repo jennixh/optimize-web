@@ -3,11 +3,12 @@
 import io
 import base64
 import json
+import sys
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .graphical_method import GraphicalMethod
 from django.shortcuts import render
-from .big_m import SimplexBigM  # ajuste o caminho conforme onde seu código Big M está
+from .big_m import SimplexBigM 
 
 def index(request):
     return render(request, 'main.html')
@@ -57,16 +58,29 @@ def solve_bigm(request):
             sense = data.get('sense', 'max')
             constraints_type = data.get('constraints_type', None)
 
+            # Redirecionar stdout para capturar os prints
+            log_buffer = io.StringIO()
+            sys_stdout = sys.stdout
+            sys.stdout = log_buffer
+
+            # Resolver o problema
             solver = SimplexBigM(c, A, b, sense=sense, constraints_type=constraints_type)
             solution, optimal_value = solver.solve()
 
+            # Restaurar o stdout
+            sys.stdout = sys_stdout
+
+            # Pegar conteúdo do log
+            log_text = log_buffer.getvalue()
+
             return JsonResponse({
                 'solution': solution.tolist(),
-                'optimal_value': optimal_value
+                'optimal_value': optimal_value,
+                'log': log_text  # <-- envia o log para o frontend
             })
 
         except Exception as e:
+            sys.stdout = sys_stdout  # garantir que restaura mesmo com erro
             return JsonResponse({'error': str(e)}, status=400)
 
     return JsonResponse({'message': 'Only POST allowed'}, status=405)
-

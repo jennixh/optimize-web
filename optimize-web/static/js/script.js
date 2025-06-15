@@ -558,7 +558,7 @@ class LinearProgrammingMethods {
             restricoesContainer.appendChild(restricaoDiv);
         }
     }
-
+    
     updateMinimizacaoForm() {
         const numVars = parseInt(document.getElementById('min-num-vars').value);
         const numRestrictions = parseInt(document.getElementById('min-num-restrictions').value);
@@ -630,11 +630,58 @@ class LinearProgrammingMethods {
     }
 
     resolverGrafico() {
-        console.log('Resolvendo pelo método gráfico...');
-        // Aqui seria implementada a lógica de resolução
-        alert('Formulário configurado! Implementar lógica de resolução gráfica.');
-    }
+        const tipo = document.getElementById('grafico-objetivo-tipo').value;
+        const c1 = parseFloat(document.getElementById('grafico-c1').value);
+        const c2 = parseFloat(document.getElementById('grafico-c2').value);
+    
+        const A = [];
+        const b = [];
+        const constraints_type = [];
+    
+        const linhas = document.querySelectorAll('#grafico-restricoes .restricao-row');
+        linhas.forEach(linha => {
+            const inputs = linha.querySelectorAll('input');
+            if (inputs.length === 3) {
+                const a1 = parseFloat(inputs[0].value);
+                const a2 = parseFloat(inputs[1].value);
+                const bi = parseFloat(inputs[2].value);
+                A.push([a1, a2]);
+                b.push(bi);
+                constraints_type.push('<='); // ajuste se seu frontend tem outro tipo de restrição
+            }
+        });
+    
+        fetch('/api/grafico/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                c: [c1, c2],
+                A: A,
+                b: b,
+                sense: tipo === 'max' ? 'max' : 'min',  // ajuste conforme seu select
+                constraints_type: constraints_type
+            })
+        })
+        .then(response => response.json())
+       .then(data => {
+        if (data.error) {
+            console.error("Erro:", data.error);
+            alert("Erro: " + data.error);
+            return;
+        }
 
+        alert(`Solução: ponto ${data.solution_point}, valor ótimo ${data.optimal_value}`);
+
+        // Exibir gráfico
+        if (data.plot_image) {
+            const imgTag = `<img src="data:image/png;base64,${data.plot_image}" alt="Gráfico da Solução" style="max-width: 100%; border: 1px solid #ccc; margin-top: 15px;" />`;
+            document.getElementById('grafico-solucao').innerHTML = imgTag;
+        }
+    })
+    }        
+           
     resolverSimplex() {
         console.log('Resolvendo pelo método Simplex...');
         // Aqui seria implementada a lógica de resolução
@@ -642,10 +689,108 @@ class LinearProgrammingMethods {
     }
 
     resolverBigM() {
-        console.log('Resolvendo pelo método Big M...');
-        // Aqui seria implementada a lógica de resolução
-        alert('Formulário configurado! Implementar lógica de resolução Big M.');
+        try {
+            const numVars = parseInt(document.getElementById('bigm-num-vars').value);
+            const numRestrictions = parseInt(document.getElementById('bigm-num-restrictions').value);
+            
+            // Coletando coeficientes da função objetivo
+            const c = [];
+            for (let i = 1; i <= numVars; i++) {
+                const element = document.getElementById(`bigm-c${i}`);
+                if (!element) {
+                    throw new Error(`Elemento bigm-c${i} não encontrado`);
+                }
+                const val = parseFloat(element.value);
+                c.push(isNaN(val) ? 0 : val);
+            }
+
+            // Coletando as restrições
+            const A = [];
+            const b = [];
+            const constraints_type = [];
+
+            const restricoesContainer = document.getElementById('bigm-restricoes-container');
+            const restricaoRows = restricoesContainer.querySelectorAll('.restricao-row');
+
+            restricaoRows.forEach((row, i) => {
+                const linha = [];
+                const inputs = row.querySelectorAll('input[type="number"]');
+                const signs = row.querySelectorAll('.coefficient-sign');
+                const constraintTypeSelect = row.querySelector('.constraint-type');
+
+                for (let j = 0; j < numVars; j++) {
+                    if (inputs[j]) {
+                        let val = parseFloat(inputs[j].value) || 0;
+                        if (signs[j] && signs[j].value === '-') {
+                            val = -val;
+                        }
+                        linha.push(val);
+                    } else {
+                        linha.push(0);
+                    }
+                }
+                A.push(linha);
+
+                const bInput = inputs[numVars];
+                const bVal = parseFloat(bInput ? bInput.value : 0);
+                b.push(isNaN(bVal) ? 0 : bVal);
+
+                const tipoRestricao = constraintTypeSelect ? constraintTypeSelect.value : '<=';
+                constraints_type.push(tipoRestricao);
+            });
+
+            // Enviando dados para o backend Django via POST
+            fetch('/bigm/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    c: c,
+                    A: A,
+                    b: b,
+                    constraints_type: constraints_type,
+                }),
+            })
+            .then(response => response.json())
+            .then(result => {
+                // Exibir o resultado na tela
+                this.showBigMResult(result);
+            })
+
+        } catch (error) {
+            console.error('Erro no resolverBigM:', error);
+            alert(`Erro: ${error.message}`);
+        }
     }
+
+    showBigMResult(result) {
+        const container = document.getElementById('bigm-solution-content');
+    
+        container.innerHTML = `
+            <div style="
+                background-color: #000;
+                color: #00ff00;
+                font-family: 'Courier New', monospace;
+                padding: 15px;
+                border-radius: 6px;
+                white-space: pre-wrap;
+                overflow-x: auto;
+                max-height: 400px;
+            ">
+                <p><strong>Valor ótimo:</strong> ${result.optimal_value}</p>
+                <p><strong>Solução (valores das variáveis):</strong> [${result.solution.join(', ')}]</p>
+                <h4>Log do Algoritmo</h4>
+                <pre>${result.log || 'Nenhum log disponível.'}</pre>
+            </div>
+        `;
+    
+        // Mostra a seção de resultados se estiver oculta
+        const resultSection = document.getElementById('bigm-result-section');
+        if (resultSection.style.display === 'none') {
+            resultSection.style.display = 'block';
+        }
+    }    
 
     resolverMinimizacao() {
         console.log('Resolvendo pelo método de Minimização...');
